@@ -33,7 +33,7 @@ Com o aumento da base de clientes e das vendas, o dono percebeu a necessidade de
 
 ```sql
 SELECT nome_produto, SUM(quantidade) AS total_vendas
-FROM `my-project-90354-470710.livraria_devsaber.vendas`
+FROM `t1engenhariadados.turma3_grupo8.Vendas`
 GROUP BY nome_produto
 ORDER BY total_vendas DESC
 LIMIT 10;
@@ -55,7 +55,7 @@ LIMIT 10;
 ```sql
 SELECT FORMAT_DATE('%Y-%m', data_venda) AS mes,
        SUM(preco_produto * quantidade) AS faturamento
-FROM `my-project-90354-470710.livraria_devsaber.vendas`
+FROM `t1engenhariadados.turma3_grupo8.Vendas`
 GROUP BY mes
 ORDER BY mes;
 
@@ -76,7 +76,7 @@ ORDER BY mes;
 ```sql
 SELECT nome_cliente,
        SUM(quantidade) AS total_compras
-FROM `my-project-90354-470710.livraria_devsaber.vendas`
+FROM `t1engenhariadados.turma3_grupo8.Vendas`
 GROUP BY nome_cliente
 ORDER BY total_compras DESC
 LIMIT 10;
@@ -98,7 +98,7 @@ LIMIT 10;
 ```sql
 SELECT categoria_produto,
        SUM(preco_produto * quantidade) AS faturamento_total
-FROM `my-project-90354-470710.livraria_devsaber.vendas`
+FROM `t1engenhariadados.turma3_grupo8.Vendas`
 GROUP BY categoria_produto
 ORDER BY faturamento_total DESC;
 
@@ -119,7 +119,7 @@ ORDER BY faturamento_total DESC;
 ```sql
 SELECT EXTRACT(MONTH FROM data_venda) AS mes,
        SUM(quantidade) AS total_vendas
-FROM `my-project-90354-470710.livraria_devsaber.vendas`
+FROM `t1engenhariadados.turma3_grupo8.Vendas`
 GROUP BY mes
 ORDER BY total_vendas DESC;
 
