@@ -1,0 +1,50 @@
+Processo de Criação de Tabelas no BigQuery
+
+Passo 1: Criando o Dataset
+
+No BigQuery, selecionei o projeto t1engenhariadados. Depois, cliquei nos três pontinhos ao lado do projeto e escolhi *Criar dataset*. Coloquei o ID do dataset como turma3_grupo8 . Assim, o espaço para armazenar as tabelas estava pronto.
+
+Passo 2: Criando as Tabelas
+
+Em seguida, abri o editor de consultas do BigQuery e escrevi os comandos para criar as três tabelas principais: Clientes, *Produtos* e *Vendas*. Usei o comando CREATE OR REPLACE TABLE para garantir que, se a tabela já existisse, ela seria substituída sem problemas.
+
+O código que usei foi:
+
+- Tabela Clientes
+CREATE OR REPLACE TABLE t1engenhariadados.turma3_grupo8.Clientes (
+ID_Cliente INT64,
+Nome_Cliente STRING,
+Email_Cliente STRING,
+Estado_Cliente STRING
+);
+- Tabela Produtos
+CREATE OR REPLACE TABLE t1engenhariadados.turma3_grupo8.Produtos (
+ID_Produto INT64,
+Nome_Produto STRING,
+Categoria_Produto STRING,
+Preco_Produto NUMERIC
+);
+- Tabela Vendas
+CREATE OR REPLACE TABLE t1engenhariadados.turma3_grupo8.Vendas (
+ID_Venda INT64,
+ID_Cliente INT64,
+ID_Produto INT64,
+Data_Venda DATE,
+Quantidade INT64
+);
+
+Depois de escrever tudo, cliquei em *Executar* e as tabelas foram criadas com sucesso.
+
+Passo 3: Conferindo as Tabelas
+
+No painel do lado esquerdo, expandi o dataset turma3_grupo8 e confirmei que as três tabelas apareciam: *Clientes, **Produtos* e *Vendas*. Cliquei em cada tabela para verificar se todas as colunas estavam corretas.
+
+Para testar, executei:
+
+SELECT * FROM t1engenhariadados.turma3_grupo8.Clientes LIMIT 5;
+
+Retornou vazio, mas isso era esperado, já que ainda não inseri os dados.
+
+Conclusão
+
+Criado o dataset e as três tabelas principais no BigQuery. Agora, a estrutura está pronta para que a outra pessoa insira os dados com INSERT INTO.
