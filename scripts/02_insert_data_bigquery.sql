@@ -1,86 +1,4 @@
-Ingestão 1 - sem considerar a questão de evitar dados duplicados
-
--- Inserção de dados na tabela Clientes
-INSERT INTO `t1engenhariadados.turma3_grupo8.Clientes` (
-  ID_Cliente,
-  Nome_Cliente,
-  Email_Cliente,
-  Estado_Cliente
-)
-SELECT
-    ROW_NUMBER() OVER () AS ID_Cliente,
-    Nome_Cliente,
-    Email_Cliente,
-    Estado_Cliente,
-FROM (
-  SELECT 'Ana Silva' AS Nome_Cliente, 'ana.s@email.com' AS Email_Cliente, 'SP' AS Estado_Cliente
-  UNION ALL
-  SELECT 'Bruno Costa', 'b.costa@email.com', 'RJ'
-  UNION ALL
-  SELECT 'Carla Dias', 'carla.d@email.com', 'SP'
-  UNION ALL
-  SELECT 'Daniel Souza', 'daniel.s@email.com', 'MG'
-) AS novos_clientes;
-
--- Inserção de dados na tabela Produtos
-INSERT INTO `t1engenhariadados.turma3_grupo8.Produtos` (
-  ID_Produto,
-  Nome_Produto,
-  Categoria_Produto,
-  Preco_Produto
-)
-SELECT
-    ROW_NUMBER() OVER () AS ID_Produto,
-    Nome_Produto,
-    Categoria_Produto,
-    Preco_Produto,
-FROM  (
-  SELECT 'Fundamentos de SQL' AS Nome_Produto, 'Dados' AS Categoria_Produto, 60.00 AS Preco_Produto
-  UNION ALL
-  SELECT 'Duna', 'Ficção Científica', CAST(80.50 AS NUMERIC)
-  UNION ALL
-  SELECT 'Python para Dados', 'Programação', CAST(75.00 AS NUMERIC)
-  UNION ALL
-  SELECT 'O Guia do Mochileiro', 'Ficção Científica', CAST(42.00 AS NUMERIC)
-) AS novos_produtos;
-
--- Inserção de dados na tabela Vendas
-INSERT INTO `t1engenhariadados.turma3_grupo8.Vendas` (
-  ID_Venda,
-  ID_Cliente,
-  ID_Produto,
-  Data_Venda,
-  Quantidade
-)
-SELECT
-    ROW_NUMBER() OVER () AS ID_Venda,
-    ID_Cliente,
-    ID_Produto,
-    Data_Venda,
-    Quantidade,
-FROM  (
-  SELECT 1 AS ID_Cliente, 101 AS ID_Produto, DATE '2024-01-15' AS Data_Venda, 1 AS Quantidade
-  UNION ALL
-  SELECT 2, 102, DATE '2024-01-18', 1
-  UNION ALL
-  SELECT 3, 103, DATE '2024-02-02', 2
-  UNION ALL
-  SELECT 1, 102, DATE '2024-02-10', 1
-  UNION ALL
-  SELECT 4, 101, DATE '2024-02-20', 1
-  UNION ALL
-  SELECT 2, 104, DATE '2024-03-05', 1
-) AS novas_vendas;
-
-Drop dos dados das tabelas
-
-DELETE FROM `t1engenhariadados.turma3_grupo8.Clientes` WHERE TRUE;
-DELETE FROM `t1engenhariadados.turma3_grupo8.Produtos` WHERE TRUE;
-DELETE FROM `t1engenhariadados.turma3_grupo8.Vendas` WHERE TRUE;
-
-Ingestão 2 - considerando  a questão de evitar dados duplicados
-
--- Inserção de dados na tabela Clientes
+-- Inserção de dados na tabela Clientes dados brutos
 -- MERGE para a tabela Clientes, gerando IDs numéricos (INT64)
 MERGE INTO `t1engenhariadados.turma3_grupo8.Clientes` AS C
 USING (
@@ -160,9 +78,10 @@ WHEN NOT MATCHED THEN
   INSERT (ID_Venda, ID_Cliente, ID_Produto, Data_Venda, Quantidade)
   VALUES (U.ID_Venda, U.ID_Cliente, U.ID_Produto, U.Data_Venda, U.Quantidade);
 
-Ingestão 2.1 - considerando add de dados aleatórios
 
--- Inserção de dados na tabela Clientes
+
+  -- Inserção de dados aleatórios
+  -- Inserção de dados na tabela Clientes
 MERGE INTO `t1engenhariadados.turma3_grupo8.Clientes` AS C
 USING (
   SELECT
@@ -214,23 +133,6 @@ USING (
     DATE_ADD(DATE '2024-01-01', INTERVAL CAST(FLOOR(RAND()*365) AS INT64) DAY) AS Data_Venda,
     CAST(FLOOR(RAND()*5+1) AS INT64) AS Quantidade
   FROM UNNEST(GENERATE_ARRAY(1,200)) AS n
-) AS U
-ON V.ID_Venda = U.ID_Venda
-WHEN NOT MATCHED THEN
-  INSERT (ID_Venda, ID_Cliente, ID_Produto, Data_Venda, Quantidade)
-  VALUES (U.ID_Venda, U.ID_Cliente, U.ID_Produto, U.Data_Venda, U.Quantidade);
-
-Ingestão 2.2 - Add vendas aleatórias e recorrentes
-
-MERGE INTO `t1engenhariadados.turma3_grupo8.Vendas` AS V
-USING (
-  SELECT
-    (SELECT IFNULL(MAX(ID_Venda),0) FROM `t1engenhariadados.turma3_grupo8.Vendas`) + ROW_NUMBER() OVER() AS ID_Venda,
-    CAST(FLOOR(RAND()*200+1) AS INT64) AS ID_Cliente,     -- 200 clientes possíveis
-    CAST(FLOOR(RAND()*200+1) AS INT64) AS ID_Produto,     -- 200 produtos possíveis
-    DATE_ADD(DATE '2024-01-01', INTERVAL CAST(FLOOR(RAND()*365) AS INT64) DAY) AS Data_Venda,
-    CAST(FLOOR(RAND()*5+1) AS INT64) AS Quantidade
-  FROM UNNEST(GENERATE_ARRAY(1, 1000)) AS n               -- 1000 novas vendas
 ) AS U
 ON V.ID_Venda = U.ID_Venda
 WHEN NOT MATCHED THEN
